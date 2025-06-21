@@ -1,6 +1,161 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
 
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.javafxproject.controller.FruitsMarketController">
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="20.0" style="-fx-background-color: #f0f0f0; -fx-padding: 10;">
+            <children>
+                <Label text="Fruits Market" textFill="#888888">
+                    <font>
+                        <Font name="System Bold" size="24.0" />
+                    </font>
+                </Label>
+                <Region HBox.hgrow="ALWAYS" />
+                <Label text="language" textFill="#888888" />
+                <Label text="English" />
+                <Region HBox.hgrow="ALWAYS" />
+                <HBox alignment="CENTER" spacing="5.0">
+                    <children>
+                        <Label text="My Account" textFill="#888888" />
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@image/app.webp" />
+                            </image>
+                        </ImageView>
+                    </children>
+                </HBox>
+            </children>
+        </HBox>
+    </top>
+    <center>
+        <HBox spacing="20.0">
+            <children>
+                <!-- Left Panel - Featured Product -->
+                <VBox alignment="TOP_CENTER" spacing="15.0" style="-fx-background-color: #8B8F47; -fx-background-radius: 20; -fx-padding: 20;" minWidth="300.0">
+                    <children>
+                        <Label fx:id="featuredNameLabel" text="Kiwi" textFill="WHITE">
+                            <font>
+                                <Font name="System Bold" size="28.0" />
+                            </font>
+                        </Label>
+                        <Label fx:id="featuredPriceLabel" text="{$2.99}" textFill="WHITE">
+                            <font>
+                                <Font name="System Bold" size="24.0" />
+                            </font>
+                        </Label>
+                        <ImageView fx:id="featuredImage" fitHeight="120.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@image/banana.webp" />
+                            </image>
+                        </ImageView>
+                        <HBox alignment="CENTER" spacing="10.0">
+                            <children>
+                                <Label text="Kg" textFill="WHITE">
+                                    <font>
+                                        <Font size="16.0" />
+                                    </font>
+                                </Label>
+                                <ComboBox fx:id="quantityCombo1" prefWidth="80.0" style="-fx-background-color: rgba(255,255,255,0.3);" />
+                            </children>
+                        </HBox>
+                        <Label text="or" textFill="WHITE">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                        </Label>
+                        <HBox alignment="CENTER" spacing="10.0">
+                            <children>
+                                <Label text="Kg" textFill="WHITE">
+                                    <font>
+                                        <Font size="16.0" />
+                                    </font>
+                                </Label>
+                                <ComboBox fx:id="quantityCombo2" prefWidth="80.0" style="-fx-background-color: rgba(255,255,255,0.3);" />
+                            </children>
+                        </HBox>
+                        <Button fx:id="addToCartBtn" mnemonicParsing="false" onAction="#addToCart" prefWidth="200.0" style="-fx-background-color: #D3D3D3; -fx-background-radius: 20;" text="ADD TO CART">
+                            <font>
+                                <Font name="System Bold" size="14.0" />
+                            </font>
+                        </Button>
+                    </children>
+                </VBox>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="780.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" />
+                <!-- Right Panel - Product Grid -->
+                <VBox spacing="20.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <!-- Search Bar -->
+                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                            <children>
+                                <TextField fx:id="searchField" promptText="Type here to search" style="-fx-background-radius: 25; -fx-padding: 10;" HBox.hgrow="ALWAYS" />
+                                <Button fx:id="searchBtn" mnemonicParsing="false" onAction="#searchProducts" style="-fx-background-color: #666666; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 10 20;" text="Search" />
+                            </children>
+                        </HBox>
+
+                        <!-- Delivery Info -->
+                        <HBox spacing="20.0">
+                            <children>
+                                <HBox alignment="CENTER" spacing="10.0" style="-fx-background-color: #E0E0E0; -fx-background-radius: 15; -fx-padding: 15;">
+                                    <children>
+                                        <VBox>
+                                            <children>
+                                                <Label text="Free delivery">
+                                                    <font>
+                                                        <Font name="System Bold" size="14.0" />
+                                                    </font>
+                                                </Label>
+                                                <Label text="over $20 order" textFill="#888888" />
+                                            </children>
+                                        </VBox>
+                                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@image/chery.webp" />
+                                            </image>
+                                        </ImageView>
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER" spacing="10.0" style="-fx-background-color: #C8E6C9; -fx-background-radius: 15; -fx-padding: 15;">
+                                    <children>
+                                        <VBox>
+                                            <children>
+                                                <Label text="Shopping online">
+                                                    <font>
+                                                        <Font name="System Bold" size="14.0" />
+                                                    </font>
+                                                </Label>
+                                                <Label text="get your shopping in same day" textFill="#666666" />
+                                            </children>
+                                        </VBox>
+                                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@image/org.webp" />
+                                            </image>
+                                        </ImageView>
+                                    </children>
+                                </HBox>
+                            </children>
+                        </HBox>
+
+                        <!-- Products Grid -->
+                        <GridPane fx:id="productsGrid" hgap="15.0" vgap="15.0">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="150.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="150.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="150.0" />
+                            </columnConstraints>
+                        </GridPane>
+                    </children>
+                </VBox>
+            </children>
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+        </HBox>
+    </center>
+</BorderPane>

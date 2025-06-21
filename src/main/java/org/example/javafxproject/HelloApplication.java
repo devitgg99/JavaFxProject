@@ -10,11 +10,7 @@ import java.io.IOException;
 public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-<<<<<<< Updated upstream
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("LoginForm.fxml"));
-=======
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("dashboard-view"));
->>>>>>> Stashed changes
+        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("dashboard-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 320, 240);
         stage.setTitle("Movie Management System");
         stage.setScene(scene);
