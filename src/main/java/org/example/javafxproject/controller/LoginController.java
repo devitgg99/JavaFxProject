@@ -62,7 +62,8 @@ public class LoginController {
                 System.out.println("    Login successful for: " + email);
 
                 // Load the new scene
-                FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
+                // Corrected line in LoginController.java, inside handleLogin method
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/javafxproject/dashboard-view.fxml"));
                 Parent root = loader.load();
                 Scene scene = new Scene(root, 1200, 800);
 
