@@ -7,155 +7,132 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.javafxproject.controller.FruitsMarketController">
-    <top>
-        <HBox alignment="CENTER_LEFT" spacing="20.0" style="-fx-background-color: #f0f0f0; -fx-padding: 10;">
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.javafxproject.controller.FruitsMarketController">
+    <left>
+        <VBox prefWidth="300.0" style="-fx-background-color: #A9A9A9; -fx-padding: 20;" BorderPane.alignment="CENTER">
             <children>
-                <Label text="Fruits Market" textFill="#888888">
+                <Label fx:id="selectedFruitNameLabel" text="Kiwi" textFill="WHITE">
                     <font>
-                        <Font name="System Bold" size="24.0" />
+                        <Font size="24.0" />
                     </font>
+                    <VBox.margin>
+                        <Insets bottom="10.0" />
+                    </VBox.margin>
                 </Label>
-                <Region HBox.hgrow="ALWAYS" />
-                <Label text="language" textFill="#888888" />
-                <Label text="English" />
-                <Region HBox.hgrow="ALWAYS" />
-                <HBox alignment="CENTER" spacing="5.0">
+                <Label fx:id="selectedFruitPriceLabel" text="{$2.99}" textFill="WHITE">
+                    <font>
+                        <Font size="20.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets bottom="20.0" />
+                    </VBox.margin>
+                </Label>
+                <ImageView fx:id="selectedFruitImageView" fitHeight="200.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@image/kiwi_large.png" />
+                    </image>
+                    <VBox.margin>
+                        <Insets bottom="30.0" />
+                    </VBox.margin>
+                </ImageView>
+                <HBox alignment="CENTER_LEFT" spacing="10.0">
                     <children>
-                        <Label text="My Account" textFill="#888888" />
-                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@image/app.webp" />
-                            </image>
-                        </ImageView>
-                    </children>
-                </HBox>
-            </children>
-        </HBox>
-    </top>
-    <center>
-        <HBox spacing="20.0">
-            <children>
-                <!-- Left Panel - Featured Product -->
-                <VBox alignment="TOP_CENTER" spacing="15.0" style="-fx-background-color: #8B8F47; -fx-background-radius: 20; -fx-padding: 20;" minWidth="300.0">
-                    <children>
-                        <Label fx:id="featuredNameLabel" text="Kiwi" textFill="WHITE">
-                            <font>
-                                <Font name="System Bold" size="28.0" />
-                            </font>
-                        </Label>
-                        <Label fx:id="featuredPriceLabel" text="{$2.99}" textFill="WHITE">
-                            <font>
-                                <Font name="System Bold" size="24.0" />
-                            </font>
-                        </Label>
-                        <ImageView fx:id="featuredImage" fitHeight="120.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@image/banana.webp" />
-                            </image>
-                        </ImageView>
-                        <HBox alignment="CENTER" spacing="10.0">
-                            <children>
-                                <Label text="Kg" textFill="WHITE">
-                                    <font>
-                                        <Font size="16.0" />
-                                    </font>
-                                </Label>
-                                <ComboBox fx:id="quantityCombo1" prefWidth="80.0" style="-fx-background-color: rgba(255,255,255,0.3);" />
-                            </children>
-                        </HBox>
-                        <Label text="or" textFill="WHITE">
+                        <Label text="Kg" textFill="WHITE">
                             <font>
                                 <Font size="16.0" />
                             </font>
                         </Label>
-                        <HBox alignment="CENTER" spacing="10.0">
-                            <children>
-                                <Label text="Kg" textFill="WHITE">
-                                    <font>
-                                        <Font size="16.0" />
-                                    </font>
-                                </Label>
-                                <ComboBox fx:id="quantityCombo2" prefWidth="80.0" style="-fx-background-color: rgba(255,255,255,0.3);" />
-                            </children>
-                        </HBox>
-                        <Button fx:id="addToCartBtn" mnemonicParsing="false" onAction="#addToCart" prefWidth="200.0" style="-fx-background-color: #D3D3D3; -fx-background-radius: 20;" text="ADD TO CART">
-                            <font>
-                                <Font name="System Bold" size="14.0" />
-                            </font>
-                        </Button>
+                        <TextField fx:id="quantityKgTextField" prefWidth="80.0" promptText="1" />
                     </children>
-                </VBox>
-
-                <!-- Right Panel - Product Grid -->
-                <VBox spacing="20.0" HBox.hgrow="ALWAYS">
+                    <VBox.margin>
+                        <Insets bottom="10.0" />
+                    </VBox.margin>
+                </HBox>
+                <Label text="or" textFill="WHITE">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets bottom="10.0" />
+                    </VBox.margin>
+                </Label>
+                <HBox alignment="CENTER_LEFT" spacing="10.0">
                     <children>
-                        <!-- Search Bar -->
-                        <HBox alignment="CENTER_LEFT" spacing="10.0">
-                            <children>
-                                <TextField fx:id="searchField" promptText="Type here to search" style="-fx-background-radius: 25; -fx-padding: 10;" HBox.hgrow="ALWAYS" />
-                                <Button fx:id="searchBtn" mnemonicParsing="false" onAction="#searchProducts" style="-fx-background-color: #666666; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 10 20;" text="Search" />
-                            </children>
-                        </HBox>
-
-                        <!-- Delivery Info -->
-                        <HBox spacing="20.0">
-                            <children>
-                                <HBox alignment="CENTER" spacing="10.0" style="-fx-background-color: #E0E0E0; -fx-background-radius: 15; -fx-padding: 15;">
-                                    <children>
-                                        <VBox>
-                                            <children>
-                                                <Label text="Free delivery">
-                                                    <font>
-                                                        <Font name="System Bold" size="14.0" />
-                                                    </font>
-                                                </Label>
-                                                <Label text="over $20 order" textFill="#888888" />
-                                            </children>
-                                        </VBox>
-                                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                            <image>
-                                                <Image url="@image/chery.webp" />
-                                            </image>
-                                        </ImageView>
-                                    </children>
-                                </HBox>
-                                <HBox alignment="CENTER" spacing="10.0" style="-fx-background-color: #C8E6C9; -fx-background-radius: 15; -fx-padding: 15;">
-                                    <children>
-                                        <VBox>
-                                            <children>
-                                                <Label text="Shopping online">
-                                                    <font>
-                                                        <Font name="System Bold" size="14.0" />
-                                                    </font>
-                                                </Label>
-                                                <Label text="get your shopping in same day" textFill="#666666" />
-                                            </children>
-                                        </VBox>
-                                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                            <image>
-                                                <Image url="@image/org.webp" />
-                                            </image>
-                                        </ImageView>
-                                    </children>
-                                </HBox>
-                            </children>
-                        </HBox>
-
-                        <!-- Products Grid -->
-                        <GridPane fx:id="productsGrid" hgap="15.0" vgap="15.0">
-                            <columnConstraints>
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="150.0" />
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="150.0" />
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="150.0" />
-                            </columnConstraints>
-                        </GridPane>
+                        <Label text="Kg" textFill="WHITE">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                        </Label>
+                        <ComboBox fx:id="weightComboBox" prefWidth="120.0" promptText="selected" />
                     </children>
-                </VBox>
+                    <VBox.margin>
+                        <Insets bottom="30.0" />
+                    </VBox.margin>
+                </HBox>
+                <Button onAction="#addToCart" prefWidth="250.0" style="-fx-background-color: #6B8E23; -fx-text-fill: WHITE;" text="ADD TO CART">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Button>
             </children>
-            <padding>
-                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-            </padding>
-        </HBox>
+        </VBox>
+    </left>
+    <center>
+        <VBox BorderPane.alignment="CENTER">
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="20.0" style="-fx-padding: 20; -fx-background-color: #F8F8F8;">
+                    <children>
+                        <Label text="Fruits Market">
+                            <font>
+                                <Font size="24.0" />
+                            </font>
+                        </Label>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="searchTextField" promptText="Type here to search" prefWidth="200.0" />
+                        <Button onAction="#search" text="Search" style="-fx-background-color: #D3D3D3;" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Label text="language English" />
+                        <Label text="My Account" />
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@icons/shopping_cart.png" />
+                            </image>
+                        </ImageView>
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER" spacing="20.0" style="-fx-padding: 20;">
+                    <children>
+                        <Pane prefHeight="80.0" prefWidth="250.0" style="-fx-background-color: #E0E0E0; -fx-background-radius: 10;">
+                            <children>
+                                <Label layoutX="20.0" layoutY="20.0" text="Free delivery" />
+                                <Label layoutX="20.0" layoutY="40.0" text="over $20 order" />
+                                <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="190.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@icons/delivery.png" />
+                                    </image>
+                                </ImageView>
+                            </children>
+                        </Pane>
+                        <Pane prefHeight="80.0" prefWidth="250.0" style="-fx-background-color: #D4EDDA; -fx-background-radius: 10;">
+                            <children>
+                                <Label layoutX="20.0" layoutY="20.0" text="Shopping online" textFill="#28a745" />
+                                <Label layoutX="20.0" layoutY="40.0" text="get your shopping in same day" textFill="#28a745" />
+                                <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="190.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@icons/online_shopping.png" />
+                                    </image>
+                                </ImageView>
+                            </children>
+                        </Pane>
+                    </children>
+                </HBox>
+                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+                    <content>
+                        <FlowPane fx:id="fruitGrid" hgap="20.0" vgap="20.0" alignment="TOP_LEFT" style="-fx-padding: 20;">
+                        </FlowPane>
+                    </content>
+                </ScrollPane>
+            </children>
+        </VBox>
     </center>
 </BorderPane>

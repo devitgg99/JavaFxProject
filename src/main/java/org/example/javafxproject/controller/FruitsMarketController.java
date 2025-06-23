@@ -1,349 +1,199 @@
 package org.example.javafxproject.controller;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
-import javafx.geometry.Pos;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.event.ActionEvent;
-import javafx.geometry.Insets;
+import javafx.scene.layout.VBox;
+import org.example.javafxproject.Product.Fruit;
 
-import java.net.URL;
-import java.util.*;
-import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
-public class FruitsMarketController implements Initializable {
+public class FruitsMarketController {
 
-    @FXML private ComboBox<String> quantityCombo1;
-    @FXML private ComboBox<String> quantityCombo2;
-    @FXML private Button addToCartBtn;
-    @FXML private TextField searchField;
-    @FXML private Button searchBtn;
-    @FXML private GridPane productsGrid;
-    @FXML private ImageView featuredImage;
-    @FXML private Label featuredNameLabel;
-    @FXML private Label featuredPriceLabel;
+    public VBox selectedFruitPanel;
+    // FXML Elements
+    @FXML
+    private TextField searchField;
+    @FXML
+    private FlowPane fruitGrid;
+    @FXML
+    private ListView<String> cartListView;
+    @FXML
+    private Label cartCountLabel;
+    @FXML
+    private Label totalLabel;
+    @FXML
+    private ImageView selectedFruitImage;
+    @FXML
+    private Label selectedFruitName;
+    @FXML
+    private Label selectedFruitPrice;
+    @FXML
+    private ComboBox<String> quantityComboBox;
+    @FXML
+    private ComboBox<String> alternativeQuantityComboBox;
+    @FXML
+    private Button addToCartButton;
 
-    // Product data structure
-    private static class Product {
-        String name;
-        double price;
-        String imagePath;
+    // Data Structures
+    private List<Fruit> fruits = new ArrayList<>();
+    private ObservableList<String> cartItems = FXCollections.observableArrayList();
+    private double totalCost = 0.0;
 
-        Product(String name, double price, String imagePath) {
-            this.name = name;
-            this.price = price;
-            this.imagePath = imagePath;
+    // Initialization
+    @FXML
+    public void initialize() {
+        // Sample data for fruits
+        fruits.add(new Fruit("Kiwi", 2.99, "/org/example/javafxproject/image/kiwi_large.png"));
+        fruits.add(new Fruit("Coconut", 3.99, "/org/example/javafxproject/image/coconut.png"));
+        fruits.add(new Fruit("Peach", 1.50, "/org/example/javafxproject/image/peach.png"));
+        fruits.add(new Fruit("Grapes", 0.99, "/org/example/javafxproject/image/grapes.png"));
+        fruits.add(new Fruit("Watermelon", 4.99, "/org/example/javafxproject/image/watermelon.png"));
+        fruits.add(new Fruit("Orange", 2.99, "/org/example/javafxproject/image/orange.png"));
+
+        // Populate the fruit grid
+        populateFruitGrid();
+
+        // Initialize cart list view
+        cartListView.setItems(cartItems);
+
+        // Initialize quantity comboboxes
+        quantityComboBox.getItems().addAll("1", "2", "3");
+        alternativeQuantityComboBox.getItems().addAll("1", "2", "3");
+
+        // Update cart summary initially
+        updateCartSummary();
+    }
+
+    // Method to populate the fruit grid
+    private void populateFruitGrid() {
+        fruitGrid.getChildren().clear();
+        for (Fruit fruit : fruits) {
+            HBox fruitCard = createFruitCard(fruit);
+            fruitGrid.getChildren().add(fruitCard);
         }
     }
 
-    private List<Product> allProducts;
-    private List<Product> cart = new ArrayList<>();
-    private Product currentFeaturedProduct;
+    // Method to create a fruit card
+    private HBox createFruitCard(Fruit fruit) {
+        HBox card = new HBox(10);
+        card.setPrefWidth(200);
+        card.setStyle("-fx-background-color: white; -fx-border-radius: 10px; -fx-background-radius: 10px; -fx-padding: 10px;");
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("Initializing Fruits Market Controller...");
-        initializeProducts();
-        setupQuantityComboBoxes();
-        displayProducts(allProducts);
+        ImageView fruitImage = new ImageView(new Image(getClass().getResource(fruit.getImagePath()).toExternalForm()));
+        fruitImage.setFitWidth(100);
+        fruitImage.setPreserveRatio(true);
 
-        // Set initial featured product
-        if (!allProducts.isEmpty()) {
-            setFeaturedProduct(allProducts.get(0));
-        }
+        VBox fruitInfo = new VBox(5);
+        fruitInfo.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
-        // Check all images on startup
-        checkAllImages();
-    }
+        Label fruitName = new Label(fruit.getName());
+        fruitName.setStyle("-fx-font-weight: bold;");
 
-    private void initializeProducts() {
-        allProducts = Arrays.asList(
-                new Product("Banana", 2.99, "/image/banana.webp"),
-                new Product("Coconut", 3.99, "/image/coconut.webp"),
-                new Product("Peach", 1.50, "/image/peach.webp"),
-                new Product("Grapes", 0.99, "/image/grapes.webp"),
-                new Product("Watermelon", 4.99, "/image/watermelon.webp"),
-                new Product("Orange", 2.99, "/image/org.webp"),
-                new Product("Strawberry", 0.99, "/image/strawberry.webp"),
-                new Product("Mango", 0.99, "/image/mango.webp"),
-                new Product("Cherry", 0.99, "/image/chery.webp")
-        );
-        System.out.println("Initialized " + allProducts.size() + " products");
-    }
+        Label fruitPrice = new Label("$" + fruit.getPrice());
+        fruitPrice.setStyle("-fx-font-weight: bold;");
 
-    private void setupQuantityComboBoxes() {
-        // Setup quantity options
-        List<String> quantities = Arrays.asList("1", "2", "3", "4", "5");
-        quantityCombo1.getItems().addAll(quantities);
-        quantityCombo2.getItems().addAll(quantities);
-        quantityCombo1.setValue("1");
-        quantityCombo2.setValue("1");
+        fruitInfo.getChildren().addAll(fruitName, fruitPrice);
 
-        System.out.println("Quantity combo boxes initialized");
-    }
+        card.getChildren().addAll(fruitImage, fruitInfo);
 
-    private void displayProducts(List<Product> products) {
-        productsGrid.getChildren().clear();
-
-        int row = 0;
-        int col = 0;
-
-        System.out.println("Displaying " + products.size() + " products");
-
-        for (Product product : products) {
-            VBox productCard = createProductCard(product);
-            productsGrid.add(productCard, col, row);
-
-            col++;
-            if (col >= 3) { // 3 columns
-                col = 0;
-                row++;
-            }
-        }
-    }
-
-    private VBox createProductCard(Product product) {
-        VBox card = new VBox();
-        card.setAlignment(Pos.CENTER);
-        card.setSpacing(10);
-        card.setStyle("-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 15; " +
-                "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);");
-        card.setPrefWidth(150);
-        card.setPrefHeight(180);
-
-        // Product name and price
-        HBox headerBox = new HBox();
-        headerBox.setAlignment(Pos.CENTER_LEFT);
-        headerBox.setSpacing(10);
-
-        Label nameLabel = new Label(product.name);
-        nameLabel.setFont(Font.font("System", FontWeight.BOLD, 14));
-
-        Label priceLabel = new Label(String.format("$%.2f", product.price));
-        priceLabel.setFont(Font.font("System", FontWeight.BOLD, 14));
-        priceLabel.setStyle("-fx-text-fill: #666666;");
-
-        headerBox.getChildren().addAll(nameLabel, priceLabel);
-
-        // Product image
-        ImageView imageView = new ImageView();
-        imageView.setFitHeight(80);
-        imageView.setFitWidth(80);
-        imageView.setPreserveRatio(true);
-
-        // Try to load image, use placeholder if not found
-        loadProductImage(imageView, product);
-
-        // Add click handler for product selection
-        card.setOnMouseClicked(event -> selectProduct(product));
-        card.setStyle(card.getStyle() + "-fx-cursor: hand;");
-
-        // Add hover effect
-        card.setOnMouseEntered(event -> {
-            card.setStyle(card.getStyle().replace("rgba(0,0,0,0.1)", "rgba(0,0,0,0.2)"));
-        });
-
-        card.setOnMouseExited(event -> {
-            card.setStyle(card.getStyle().replace("rgba(0,0,0,0.2)", "rgba(0,0,0,0.1)"));
-        });
-
-        card.getChildren().addAll(headerBox, imageView);
+        // Add event handler for selecting a fruit
+        card.setOnMouseClicked(event -> selectFruit(fruit));
 
         return card;
     }
 
-    private void loadProductImage(ImageView imageView, Product product) {
-        try {
-            InputStream imageStream = getClass().getResourceAsStream(product.imagePath);
-            if (imageStream != null) {
-                Image image = new Image(imageStream);
-                if (!image.isError()) {
-                    imageView.setImage(image);
-                    System.out.println("✓ Successfully loaded image: " + product.imagePath);
-                } else {
-                    System.out.println("✗ Image error for: " + product.imagePath);
-                    createPlaceholderImage(imageView, product.name);
-                }
-                imageStream.close();
-            } else {
-                System.out.println("✗ Image stream is null for: " + product.imagePath);
-                createPlaceholderImage(imageView, product.name);
-            }
-        } catch (Exception e) {
-            System.out.println("✗ Error loading image " + product.imagePath + ": " + e.getMessage());
-            createPlaceholderImage(imageView, product.name);
-        }
+    // Method to handle fruit selection
+    private void selectFruit(Fruit fruit) {
+        selectedFruitImage.setImage(new Image(getClass().getResource(fruit.getImagePath()).toExternalForm()));
+        selectedFruitName.setText(fruit.getName());
+        selectedFruitPrice.setText("$" + fruit.getPrice());
+        quantityComboBox.setValue("1"); // Reset quantity
+        alternativeQuantityComboBox.setValue("1"); // Reset alternative quantity
+        addToCartButton.setDisable(false);
     }
 
-    private void createPlaceholderImage(ImageView imageView, String productName) {
-        // Create a colorful placeholder based on product name
-        int colorHash = Math.abs(productName.hashCode()) % 6;
-        String[] colors = {"#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9", "#BAE1FF", "#D4BAFF"};
-        imageView.setStyle("-fx-background-color: " + colors[colorHash] +
-                "; -fx-border-color: #CCCCCC; -fx-border-width: 1; -fx-border-radius: 5;");
-
-        // Create a simple text-based image as fallback
-        try {
-            // This creates a simple colored rectangle
-            imageView.setImage(null);
-        } catch (Exception e) {
-            System.out.println("Could not create placeholder for: " + productName);
-        }
-    }
-
-    private void setFeaturedProduct(Product product) {
-        currentFeaturedProduct = product;
-
-        if (featuredNameLabel != null) {
-            featuredNameLabel.setText(product.name);
-        }
-
-        if (featuredPriceLabel != null) {
-            featuredPriceLabel.setText(String.format("$%.2f", product.price));
-        }
-
-        if (featuredImage != null) {
-            loadProductImage(featuredImage, product);
-        }
-
-        System.out.println("Featured product set to: " + product.name);
-    }
-
-    private void selectProduct(Product product) {
-        setFeaturedProduct(product);
-        System.out.println("Selected product: " + product.name + " - $" + product.price);
-    }
-
+    // Method to add fruit to cart
     @FXML
-    private void addToCart(ActionEvent event) {
-        if (currentFeaturedProduct == null) {
-            showAlert("Error", "No product selected!");
-            return;
-        }
+    private void addToCart() {
+        String fruitName = selectedFruitName.getText();
+        double price = Double.parseDouble(selectedFruitPrice.getText().substring(1)); // Remove the '$'
+        String quantityStr = quantityComboBox.getValue();
+        int quantity = Integer.parseInt(quantityStr);
 
-        String quantity1 = quantityCombo1.getValue();
-        String quantity2 = quantityCombo2.getValue();
+        String cartItem = fruitName + " x " + quantity + " kg";
+        cartItems.add(cartItem);
 
-        int totalQuantity = 0;
+        // Update total cost
+        totalCost += price * quantity;
+        totalLabel.setText("$" + totalCost);
 
-        if (quantity1 != null && !quantity1.isEmpty()) {
-            try {
-                totalQuantity += Integer.parseInt(quantity1);
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid quantity in combo1: " + quantity1);
-            }
-        }
+        // Update cart count
+        cartCountLabel.setText(String.valueOf(cartItems.size()));
 
-        if (quantity2 != null && !quantity2.isEmpty() && !quantity2.equals("1")) {
-            try {
-                totalQuantity += Integer.parseInt(quantity2);
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid quantity in combo2: " + quantity2);
-            }
-        }
-
-        if (totalQuantity > 0) {
-            addProductToCart(currentFeaturedProduct, totalQuantity);
-            showAlert("Success", "Added " + currentFeaturedProduct.name + " x" + totalQuantity + " to cart!\n" +
-                    "Cart total: $" + String.format("%.2f", getCartTotal()));
-        } else {
-            showAlert("Error", "Please select a valid quantity!");
-        }
+        // Clear selection
+        clearSelection();
     }
 
+    // Method to clear cart
     @FXML
-    private void searchProducts(ActionEvent event) {
-        String searchTerm = searchField.getText().toLowerCase().trim();
-
-        if (searchTerm.isEmpty()) {
-            displayProducts(allProducts);
-            System.out.println("Showing all products");
-        } else {
-            List<Product> filteredProducts = new ArrayList<>();
-            for (Product product : allProducts) {
-                if (product.name.toLowerCase().contains(searchTerm)) {
-                    filteredProducts.add(product);
-                }
-            }
-            displayProducts(filteredProducts);
-            System.out.println("Found " + filteredProducts.size() + " products matching: " + searchTerm);
-        }
+    private void clearCart() {
+        cartItems.clear();
+        totalCost = 0.0;
+        updateCartSummary();
     }
 
-    private void showAlert(String title, String message) {
+    // Method to checkout
+    @FXML
+    private void checkout() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
+        alert.setTitle("Checkout");
         alert.setHeaderText(null);
-        alert.setContentText(message);
+        alert.setContentText("Proceeding to checkout with total: $" + totalCost);
         alert.showAndWait();
     }
 
-    private void checkAllImages() {
-        System.out.println("\n=== Checking Image Availability ===");
-        for (Product product : allProducts) {
-            checkImageExists(product.imagePath);
-        }
-
-        // Check icon images
-        checkImageExists("/image/app.webp");
-        checkImageExists("/image/chery.webp");
-        checkImageExists("/image/org.webp");
-        System.out.println("=== Image Check Complete ===\n");
-    }
-
-    private void checkImageExists(String imagePath) {
-        try {
-            InputStream stream = getClass().getResourceAsStream(imagePath);
-            if (stream != null) {
-                System.out.println("✓ Found: " + imagePath);
-                stream.close();
-            } else {
-                System.out.println("✗ Missing: " + imagePath);
+    // Method to search for fruits
+    @FXML
+    private void searchFruits() {
+        String query = searchField.getText().toLowerCase();
+        List<Fruit> filteredFruits = new ArrayList<>();
+        for (Fruit fruit : fruits) {
+            if (fruit.getName().toLowerCase().contains(query)) {
+                filteredFruits.add(fruit);
             }
-        } catch (Exception e) {
-            System.out.println("✗ Error checking: " + imagePath + " - " + e.getMessage());
+        }
+        populateFruitGrid(filteredFruits);
+    }
+
+    // Helper method to populate fruit grid with filtered fruits
+    private void populateFruitGrid(List<Fruit> filteredFruits) {
+        fruitGrid.getChildren().clear();
+        for (Fruit fruit : filteredFruits) {
+            HBox fruitCard = createFruitCard(fruit);
+            fruitGrid.getChildren().add(fruitCard);
         }
     }
 
-    // Cart management methods
-    public void addProductToCart(Product product, int quantity) {
-        for (int i = 0; i < quantity; i++) {
-            cart.add(product);
-        }
-        System.out.println("Cart size: " + cart.size() + " items");
+    // Method to update cart summary
+    private void updateCartSummary() {
+        cartCountLabel.setText(String.valueOf(cartItems.size()));
+        totalLabel.setText("$" + totalCost);
     }
 
-    public double getCartTotal() {
-        return cart.stream().mapToDouble(p -> p.price).sum();
-    }
-
-    public void clearCart() {
-        cart.clear();
-        System.out.println("Cart cleared");
-    }
-
-    public List<Product> getCartItems() {
-        return new ArrayList<>(cart);
-    }
-
-    public int getCartItemCount() {
-        return cart.size();
-    }
-
-    // Get current featured product
-    public Product getCurrentFeaturedProduct() {
-        return currentFeaturedProduct;
-    }
-
-    // Get all products
-    public List<Product> getAllProducts() {
-        return new ArrayList<>(allProducts);
+    // Method to clear fruit selection
+    private void clearSelection() {
+        selectedFruitImage.setImage(null);
+        selectedFruitName.setText("");
+        selectedFruitPrice.setText("");
+        quantityComboBox.setValue(null);
+        alternativeQuantityComboBox.setValue(null);
+        addToCartButton.setDisable(true);
     }
 }
